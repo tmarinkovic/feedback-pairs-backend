@@ -24,7 +24,7 @@ provider:
             Fn::GetAtt: [ sessionsTable, Arn ]
 
 functions:
-  session-cleaner:
+  sessionCleaner:
     handler: handler.sessionCleaner
     events:
       - schedule: rate(2 minutes)

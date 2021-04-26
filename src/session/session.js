@@ -9,7 +9,7 @@ module.exports.createSession = ({pairs, id}) => {
         Item: {
             'sessionId': {S: id},
             'pairs': {S: JSON.stringify(pairs)},
-            'createdAt': {S: dateFormat(new Date(), "yyyy-mm-dd, HH:MM")},
+            'createdAt': {S: dateFormat(new Date(), "yyyy-mm-dd HH:MM")},
         }
     };
     let statusCode = 500
