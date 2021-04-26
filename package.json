@@ -1,0 +1,15 @@
+{
+  "name": "meetings-creator-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.890.0",
+    "dateformat": "^4.5.1"
+  }
+}

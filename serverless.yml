@@ -1,0 +1,61 @@
+service: meetings-creator-backend
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  stage: dev
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  profile: tmarinkovic
+  region: eu-west-2
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            Fn::GetAtt: [ sessionsTable, Arn ]
+
+functions:
+  session-cleaner:
+    handler: handler.sessionCleaner
+    events:
+      - schedule: rate(2 minutes)
+  session:
+    handler: handler.session
+    events:
+      - http:
+          path: /session
+          method: put
+          cors:
+            origin: '*'
+            headers: '*'
+      - http:
+          path: /session/{sessionId}
+          method: get
+          cors:
+            origin: '*'
+            headers: '*'
+
+resources:
+  Resources:
+    sessionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: sessionsTable
+        AttributeDefinitions:
+          - AttributeName: sessionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: sessionId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
