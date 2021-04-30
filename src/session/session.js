@@ -3,6 +3,7 @@ const dateFormat = require('dateformat');
 AWS.config.update({region: 'eu-west-2'});
 
 module.exports.createSession = ({pairs, id}) => {
+    const ttl = Math.floor((Date.now() + 24 * 60 * 60 * 1000) / 1000)
     const dynamoDB = new AWS.DynamoDB({apiVersion: '2012-08-10'});
     const params = {
         TableName: 'sessionsTable',
@@ -10,6 +11,7 @@ module.exports.createSession = ({pairs, id}) => {
             'sessionId': {S: id},
             'pairs': {S: JSON.stringify(pairs)},
             'createdAt': {S: dateFormat(new Date(), "yyyy-mm-dd HH:MM")},
+            'ttl': {N: ttl.toString()}
         }
     };
     let statusCode = 500
@@ -21,12 +23,10 @@ module.exports.createSession = ({pairs, id}) => {
             statusCode = 400
             return error
         }).then(response => {
-            console.log("HERE")
-            console.log(response)
             return {
                 statusCode: statusCode,
                 headers: {
-                    "Access-Control-Allow-Origin" : "*"
+                    "Access-Control-Allow-Origin": "*"
                 },
                 body: JSON.stringify({response: response})
             };
@@ -54,13 +54,9 @@ module.exports.getSession = sessionId => {
             return {
                 statusCode: statusCode,
                 headers: {
-                    "Access-Control-Allow-Origin" : "*"
+                    "Access-Control-Allow-Origin": "*"
                 },
                 body: JSON.stringify({response: response})
             };
         })
-}
-
-module.exports.deleteOldSessions = () => {
-    console.log("Deleting")
 }

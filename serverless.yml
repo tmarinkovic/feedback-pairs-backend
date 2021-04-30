@@ -50,6 +50,9 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: sessionsTable
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: True
         AttributeDefinitions:
           - AttributeName: sessionId
             AttributeType: S
